@@ -1,13 +1,29 @@
 import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(cors());
 
-// Key name "API_KEY" nu Render-la irukanum
-const genAI = new GoogleGenerativeAI(process.env.API_KEY || "");
+// Inga dhaan path fix panni irukaen
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Render-la irundhu key edukkum
+const API_KEY = process.env.API_KEY; 
+
+if (!API_KEY) {
+  console.log("Error: API_KEY is missing in Render Environment!");
+}
+
+const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const SYSTEM_INSTRUCTION = `You are GIRI AI PRO MAX 2026 for SPIHER CSE. Style: Gen-Z Tamil with "da bro" 🔥. 
@@ -22,16 +38,19 @@ Only answer from this data. If unknown, say "Enaku therila da bro 🔄"`;
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
-    // System instruction and user message combination
+    // Instruction and message combined
     const result = await model.generateContent(`${SYSTEM_INSTRUCTION}\n\nUser: ${message}`);
     const text = result.response.text();
     res.json({ reply: text });
   } catch (error) {
-    // Indha console error Render logs-la real reason-ai kaattum
-    console.error("REAL ERROR:", error);
+    console.error("API ERROR:", error);
     res.status(500).json({ error: "Server busy da bro 🔄", details: error.message });
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+// "Cannot GET /" solution:
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => console.log(`🔥 Server running on ${PORT}`));
