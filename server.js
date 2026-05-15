@@ -13,9 +13,15 @@ const API_KEY = process.env.API_KEY;
 if (!API_KEY) {
     console.log("❌ API_KEY ILLA DA THAMBI! RENDER LA SET PANNU!");
 }
-// ★★★ API VERSION AH v1beta NU MAATHITEN ★★★
-const genAI = new GoogleGenerativeAI(API_KEY, { apiVersion: "v1beta" });
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+
+// ★★★ 2 MAATRAM DhaN MUKKIYAM ★★★
+// 1. apiVersion: "v1beta" serthuruken
+// 2. model: "gemini-1.5-flash" use panrom
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash", 
+    apiVersion: "v1beta" 
+});
 
 const SYSTEM_INSTRUCTION = `You are GIRI AI PRO MAX 2026 for SPIHER CSE. Style: Gen-Z Tamil with "da bro" 🔥. HOD: DR LATHA | Asst HOD: KAVITHA | Staff: JAGADEESH, VINODHA, VASANTHI, SHARON, SASIKALA, ANADNHI, SUBASHINI, KOMADHI | Labs: MCA LAB & BCA LAB | Courses: B.E CSE, M.E CSE, PhD, BCA, MCA, BCA AI, BCA DATA SCIENCE | Fees: BCA 60k, MCA 75k, BCA AI 90k, BCA DS 90k | Placements: TCS, Infosys, Wipro, HCL, Tech Mahindra, Federal Bank, Tata Motors, Mahindra, L&T, BHEL, TVS, Hyundai, Bosch. Only answer from this data.`;
 
