@@ -1,18 +1,14 @@
 import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
-import path from "path";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public'));
 
-// Render Environment Variable
-const API_KEY = process.env.API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
+// Key name "API_KEY" nu Render-la irukanum
+const genAI = new GoogleGenerativeAI(process.env.API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const SYSTEM_INSTRUCTION = `You are GIRI AI PRO MAX 2026 for SPIHER CSE. Style: Gen-Z Tamil with "da bro" 🔥. 
 HOD: DR LATHA | Asst HOD: KAVITHA 
@@ -23,34 +19,19 @@ Fees: BCA 60k, MCA 75k, BCA AI 90k, BCA DS 90k
 Placements: TCS, Infosys, Wipro, HCL, Tech Mahindra, Federal Bank, Tata Motors, Mahindra, L&T, BHEL, TVS, Hyundai, Bosch. 
 Only answer from this data. If unknown, say "Enaku therila da bro 🔄"`;
 
-// Sariyana Model Initialization
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
-
-    // System instruction-ai message-oda sethu anupuradhu thaan safest method
-    const prompt = `${SYSTEM_INSTRUCTION}\n\nUser: ${message}`;
-    
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
+    // System instruction and user message combination
+    const result = await model.generateContent(`${SYSTEM_INSTRUCTION}\n\nUser: ${message}`);
+    const text = result.response.text();
     res.json({ reply: text });
   } catch (error) {
-    console.error("DETAILED ERROR:", error);
-    res.status(500).json({ 
-      error: "Server busy da bro 🔄", 
-      details: error.message 
-    });
+    // Indha console error Render logs-la real reason-ai kaattum
+    console.error("REAL ERROR:", error);
+    res.status(500).json({ error: "Server busy da bro 🔄", details: error.message });
   }
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`🔥 GIRI AI PRO MAX Running on ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
