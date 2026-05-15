@@ -1,4 +1,4 @@
-mport express from "express";
+import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
 import path from "path";
