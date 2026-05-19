@@ -17,7 +17,7 @@ if (!API_KEY) {
 // ✅ GoogleGenerativeAI instance (v1 API)
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// ✅ gemini-1.5-pro - v1‑la available
+// ✅ gemini-1.5-pro - v1‑la available, v1beta‑la illa
 const model = genAI.getGenerativeModel({ 
     model: "gemini-1.5-pro" 
 });
