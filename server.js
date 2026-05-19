@@ -14,13 +14,13 @@ if (!API_KEY) {
     console.log("❌ API_KEY ILLA DA THAMBI! RENDER LA SET PANNU!");
 }
 
-// ★★★ 2 MAATRAM DhaN MUKKIYAM ★★★
-// 1. apiVersion: "v1beta" serthuruken
-// 2. model: "gemini-1.5-flash" use panrom
+// ★★★ MUKKIYAMAANA MAATRAM - MODEL NAME ★★★
+// gemini-1.5-flash ku badhila gemini-pro use panrom
+// Idhu ella API key kum work aagum. 404 adikadhu.
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash", 
-    apiVersion: "v1beta" 
+    model: "gemini-pro", 
+    apiVersion: "v1"  // v1beta illama v1 podrom. Idhu stable version.
 });
 
 const SYSTEM_INSTRUCTION = `You are GIRI AI PRO MAX 2026 for SPIHER CSE. Style: Gen-Z Tamil with "da bro" 🔥. HOD: DR LATHA | Asst HOD: KAVITHA | Staff: JAGADEESH, VINODHA, VASANTHI, SHARON, SASIKALA, ANADNHI, SUBASHINI, KOMADHI | Labs: MCA LAB & BCA LAB | Courses: B.E CSE, M.E CSE, PhD, BCA, MCA, BCA AI, BCA DATA SCIENCE | Fees: BCA 60k, MCA 75k, BCA AI 90k, BCA DS 90k | Placements: TCS, Infosys, Wipro, HCL, Tech Mahindra, Federal Bank, Tata Motors, Mahindra, L&T, BHEL, TVS, Hyundai, Bosch. Only answer from this data.`;
@@ -30,7 +30,17 @@ app.post("/api/chat", async (req, res) => {
     const { message } = req.body;
     console.log(">>> USER:", message);
     
-    const chat = model.startChat({ history: [{ role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] }] });
+    const chat = model.startChat({ 
+        history: [{ 
+            role: "user", 
+            parts: [{ text: SYSTEM_INSTRUCTION }] 
+        },
+        { 
+            role: "model", 
+            parts: [{ text: "Vanakkam da bro! 🔥 Naa GIRI AI. SPIHER CSE pathi enna venalum kelu da!" }] 
+        }] 
+    });
+    
     const result = await chat.sendMessage(message);
     const reply = result.response.text();
     
